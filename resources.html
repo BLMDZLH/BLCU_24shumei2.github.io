@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源库 - We are 24树莓2</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff4da6',
+                        secondary: '#ff99cc',
+                        accent: '#ff77b5',
+                        neutral: '#6b7280',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .shadow-card {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            .hover-scale {
+                transition: transform 0.2s ease;
+            }
+            .hover-scale:hover {
+                transform: scale(1.02);
+            }
+        }
+    </style>
+    <style>
+        .raspberry-pattern {
+            background-image: radial-gradient(circle at 15% 25%, rgba(255,77,166,0.12) 0 5px, transparent 5px),
+                              radial-gradient(circle at 65% 45%, rgba(255,136,204,0.08) 0 6px, transparent 6px);
+            background-size: 120px 120px, 180px 180px;
+            background-repeat: repeat;
+        }
+        .site-card a.site-link { color: inherit; text-decoration: none; }
+        /* 移动端优化：响应式媒体与更大触控目标 */
+        .download-btn { min-height: 44px; }
+        .download-btn i { pointer-events: none; }
+        img, iframe, video { max-width: 100%; height: auto; }
+
+        @media (max-width:420px) {
+            .download-btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+    <!-- 导航栏 -->
+    <header class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300 py-4">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                <i class="fa fa-book text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-primary">We are 24树莓2</span>
+            </div>
+            
+            <!-- 桌面导航 -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="font-medium text-gray-600 hover:text-primary border-b-2 border-transparent hover:border-primary px-1 py-2 transition-all duration-200">首页</a>
+                <a href="resources.html" class="font-medium text-primary border-b-2 border-primary px-1 py-2 transition-all duration-200">资源库</a>
+                <a href="about.html" class="font-medium text-gray-600 hover:text-primary border-b-2 border-transparent hover:border-primary px-1 py-2 transition-all duration-200">关于我们</a>
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </nav>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
+                <a href="index.html" class="font-medium text-gray-600 hover:text-primary py-2 px-4 rounded-md hover:bg-gray-50 transition-all">首页</a>
+                <a href="resources.html" class="font-medium text-primary py-2 px-4 rounded-md bg-primary/10">资源库</a>
+                <a href="about.html" class="font-medium text-gray-600 hover:text-primary py-2 px-4 rounded-md hover:bg-gray-50 transition-all">关于我们</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- 页面标题 -->
+        <section class="bg-gradient-to-r from-primary to-secondary text-white py-12 raspberry-pattern">
+            <div class="container mx-auto px-4">
+                <h1 class="text-3xl md:text-4xl font-bold">资源库</h1>
+                <p class="mt-2 opacity-90">浏览并下载专业学习资料</p>
+            </div>
+        </section>
+
+        <!-- 常用站点合集（计算机专业学生必备） -->
+        <section class="py-8 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold">计算机专业学生必备网站</h2>
+                    <p class="text-gray-600">按用途分组，点击卡片可打开网站；右侧显示简短介绍。</p>
+                    <!-- 其它本地资源（来自 allresource 目录） -->
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-card hover-scale transition-all">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-sm font-medium px-3 py-1 bg-primary/10 text-primary rounded-full">课程资料</span>
+                                    <span class="text-sm text-gray-500">上传于本地</span>
+                                </div>
+                                <h3 class="text-2xl font-semibold mb-2">数据结构知识体系完整归纳与整理.docx</h3>
+                                <p class="text-gray-600 mb-4">详尽的数据结构笔记，覆盖链表、树、图、排序与检索等重要主题（来源：allresource）。</p>
+                                <div class="flex flex-wrap items-center gap-4 text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fa fa-file-word-o"></i>
+                                        <span>DOCX 文件</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <a href="allresource/数据结构知识体系完整归纳与整理.docx" download="数据结构_知识体系.docx" class="download-btn bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-200">
+                                    <i class="fa fa-download"></i>
+                                    <span>下载</span>
+                                </a>
+                                <a href="allresource/数据结构知识体系完整归纳与整理.docx" target="_blank" class="ml-3 text-primary hover:underline">打开预览</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-card hover-scale transition-all">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-sm font-medium px-3 py-1 bg-primary/10 text-primary rounded-full">课程资料</span>
+                                    <span class="text-sm text-gray-500">上传于本地</span>
+                                </div>
+                                <h3 class="text-2xl font-semibold mb-2">人工智能原理.docx</h3>
+                                <p class="text-gray-600 mb-4">人工智能基础资料，包含常见算法与应用示例，适合课程复习与入门阅读。</p>
+                                <div class="flex flex-wrap items-center gap-4 text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fa fa-file-word-o"></i>
+                                        <span>DOCX 文件</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <a href="allresource/人工智能原理.docx" download="人工智能原理.docx" class="download-btn bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-200">
+                                    <i class="fa fa-download"></i>
+                                    <span>下载</span>
+                                </a>
+                                <a href="allresource/人工智能原理.docx" target="_blank" class="ml-3 text-primary hover:underline">打开预览</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-card hover-scale transition-all">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-sm font-medium px-3 py-1 bg-primary/10 text-primary rounded-full">课程资料</span>
+                                    <span class="text-sm text-gray-500">上传于本地</span>
+                                </div>
+                                <h3 class="text-2xl font-semibold mb-2">大学数字信号处理.docx</h3>
+                                <p class="text-gray-600 mb-4">信号处理课程资料，包含滤波器与傅里叶变换基础与示例。</p>
+                                <div class="flex flex-wrap items-center gap-4 text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fa fa-file-word-o"></i>
+                                        <span>DOCX 文件</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <a href="allresource/大学数字信号处理.docx" download="大学数字信号处理.docx" class="download-btn bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-200">
+                                    <i class="fa fa-download"></i>
+                                    <span>下载</span>
+                                </a>
+                                <a href="allresource/大学数字信号处理.docx" target="_blank" class="ml-3 text-primary hover:underline">打开预览</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-card hover-scale transition-all">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-sm font-medium px-3 py-1 bg-primary/10 text-primary rounded-full">课程资料</span>
+                                    <span class="text-sm text-gray-500">上传于本地</span>
+                                </div>
+                                <h3 class="text-2xl font-semibold mb-2">Ae常用教程.docx</h3>
+                                <p class="text-gray-600 mb-4">After Effects 常用教程文档，适合做多媒体与视频后期的学习参考。</p>
+                                <div class="flex flex-wrap items-center gap-4 text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fa fa-file-word-o"></i>
+                                        <span>DOCX 文件</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <a href="allresource/Ae常用教程.docx" download="Ae常用教程.docx" class="download-btn bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-200">
+                                    <i class="fa fa-download"></i>
+                                    <span>下载</span>
+                                </a>
+                                <a href="allresource/Ae常用教程.docx" target="_blank" class="ml-3 text-primary hover:underline">打开预览</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-card hover-scale transition-all">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-sm font-medium px-3 py-1 bg-primary/10 text-primary rounded-full">课程资料</span>
+                                    <span class="text-sm text-gray-500">上传于本地</span>
+                                </div>
+                                <h3 class="text-2xl font-semibold mb-2">常用算法合集及模板.pdf</h3>
+                                <p class="text-gray-600 mb-4">PDF 格式的算法合集，包含常用模板与示例代码，方便打印与离线查看。</p>
+                                <div class="flex flex-wrap items-center gap-4 text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                        <span>PDF 文件</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <a href="allresource/常用算法合集及模板.pdf" download="常用算法合集及模板.pdf" class="download-btn bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-200">
+                                    <i class="fa fa-download"></i>
+                                    <span>下载</span>
+                                </a>
+                                <a href="allresource/常用算法合集及模板.pdf" target="_blank" class="ml-3 text-primary hover:underline">打开预览</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-card hover-scale transition-all">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-sm font-medium px-3 py-1 bg-primary/10 text-primary rounded-full">课程资料</span>
+                                    <span class="text-sm text-gray-500">上传于本地</span>
+                                </div>
+                                <h3 class="text-2xl font-semibold mb-2">高等数学知识体系完整归纳与整理.docx</h3>
+                                <p class="text-gray-600 mb-4">常见高等数学题型归纳与解题技巧，适合复习备考使用。</p>
+                                <div class="flex flex-wrap items-center gap-4 text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fa fa-file-word-o"></i>
+                                        <span>DOCX 文件</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <a href="allresource/高等数学知识体系完整归纳与整理.docx" download="高等数学_知识体系.docx" class="download-btn bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-200">
+                                    <i class="fa fa-download"></i>
+                                    <span>下载</span>
+                                </a>
+                                <a href="allresource/高等数学知识体系完整归纳与整理.docx" target="_blank" class="ml-3 text-primary hover:underline">打开预览</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 课程学习与知识提升 -->
+                    <div class="p-6 rounded-xl border shadow-card bg-gradient-to-r from-primary/10 to-secondary/10">
+                        <h3 class="font-semibold mb-3">一、课程学习与知识提升</h3>
+                        <ul class="space-y-3">
+                            <li class="site-card">
+                                <a class="site-link font-medium" href="https://www.imooc.com/" target="_blank" rel="noopener">慕课网（IMOOC）</a>
+                                <div class="text-gray-600">专注 IT 技能培训，涵盖前端、Java、Python、数据结构等大量课程，含实战项目与问答社区。</div>
+                            </li>
+                            <li class="site-card">
+                                <a class="site-link font-medium" href="https://www.runoob.com/" target="_blank" rel="noopener">菜鸟教程</a>
+                                <div class="text-gray-600">零基础友好，提供大量在线实例、基础教程与语法示例，适合快速查阅和练习。</div>
+                            </li>
+                            <li class="site-card">
+                                <a class="site-link font-medium" href="http://csit.dhu.edu.cn" target="_blank" rel="noopener">东华大学计算机学院课件库（基础教学）</a>
+                                <div class="text-gray-600">提供数据结构、操作系统、计算机网络等课堂课件，适合复习与补充课堂内容。</div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="p-6 rounded-xl border shadow-card bg-white">
+                        <h3 class="font-semibold mb-3">二、专业知识深度拓展</h3>
+                        <ul class="space-y-3">
+                            <li>
+                                <a class="site-link font-medium" href="https://www.csdn.net/" target="_blank" rel="noopener">CSDN</a>
+                                <div class="text-gray-600">国内大型开发者社区，技术博客、问答与行业资讯并存，适合查找解决方案与跟进趋势。</div>
+                            </li>
+                            <li>
+                                <a class="site-link font-medium" href="https://juejin.cn/" target="_blank" rel="noopener">掘金</a>
+                                <div class="text-gray-600">聚焦前端/后端/移动等技术领域，优质文章与开源分享，适合进阶学习与案例学习。</div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 编程实践与算法训练 -->
+                    <div class="p-6 rounded-xl border shadow-card bg-white">
+                        <h3 class="font-semibold mb-3">三、编程实践与算法训练</h3>
+                        <ul class="space-y-3">
+                            <li>
+                                <a class="site-link font-medium" href="https://www.nowcoder.com/" target="_blank" rel="noopener">牛客网</a>
+                                <div class="text-gray-600">校招求职与算法训练平台，海量题库、企业真题与面试模拟资源。</div>
+                            </li>
+                            <li>
+                                <a class="site-link font-medium" href="https://leetcode-cn.com/" target="_blank" rel="noopener">LeetCode（力扣）</a>
+                                <div class="text-gray-600">权威算法训练平台，支持多语言提交，题解与讨论丰富，适合备战面试。</div>
+                            </li>
+                            <li>
+                                <a class="site-link font-medium" href="https://www.hackerrank.com/" target="_blank" rel="noopener">HackerRank</a>
+                                <div class="text-gray-600">全球编程练习平台，包含算法、数据库、AI 等挑战，适合提高实战能力。</div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 科研文献与学术资源 -->
+                    <div class="p-6 rounded-xl border shadow-card bg-gradient-to-r from-secondary/10 to-primary/10">
+                        <h3 class="font-semibold mb-3">四、科研文献与学术资源</h3>
+                        <ul class="space-y-3">
+                            <li>
+                                <a class="site-link font-medium" href="https://dl.acm.org/" target="_blank" rel="noopener">ACM Digital Library</a>
+                                <div class="text-gray-600">计算机领域权威期刊与会议论文数据库，适合科研与深度学习。</div>
+                            </li>
+                            <li>
+                                <a class="site-link font-medium" href="https://ieeexplore.ieee.org/" target="_blank" rel="noopener">IEEE Xplore</a>
+                                <div class="text-gray-600">电气电子与计算机科学的重要文献库，涵盖大量会议与期刊文章。</div>
+                            </li>
+                            <li>
+                                <a class="site-link font-medium" href="https://www.sciencedirect.com/" target="_blank" rel="noopener">ScienceDirect</a>
+                                <div class="text-gray-600">Elsevier 的全文数据库，覆盖计算机与相关学科大量期刊与图书。</div>
+                            </li>
+                            <li>
+                                <a class="site-link font-medium" href="https://link.springer.com/" target="_blank" rel="noopener">SpringerLink</a>
+                                <div class="text-gray-600">提供大量电子书与期刊，适合查找计算机方向教材与专题论文。</div>
+                            </li>
+                            <li>
+                                <a class="site-link font-medium" href="http://content.iospress.com" target="_blank" rel="noopener">IOS Press 电子期刊</a>
+                                <div class="text-gray-600">出版社期刊集合，可通过高校或研究机构访问。</div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 工具与资源辅助 -->
+                    <div class="p-6 rounded-xl border shadow-card bg-white">
+                        <h3 class="font-semibold mb-3">五、工具与资源辅助</h3>
+                        <ul class="space-y-3">
+                            <li>
+                                <a class="site-link font-medium" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+                                <div class="text-gray-600">全球开源代码托管与协作平台，是查找项目源码、托管个人项目的首选。</div>
+                            </li>
+                            <li>
+                                <a class="site-link font-medium" href="https://stackoverflow.com/" target="_blank" rel="noopener">Stack Overflow</a>
+                                <div class="text-gray-600">全球最大的技术问答社区，几乎任何编程问题都可在此找到答案或讨论。</div>
+                            </li>
+                            <li>
+                                <a class="site-link font-medium" href="https://www.w3schools.com/" target="_blank" rel="noopener">W3Schools</a>
+                                <div class="text-gray-600">网页开发入门与快速参考网站，包含在线编辑器与示例。</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 资源列表和筛选 -->
+        <section class="py-12">
+            <div class="container mx-auto px-4">
+                <!-- 筛选栏 -->
+                <div class="bg-white rounded-xl shadow-card p-6 mb-8">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                        <!-- 搜索框 -->
+                        <div class="relative w-full md:w-96">
+                            <input type="text" id="search-input" placeholder="搜索资源..." 
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                            <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                        
+                        <!-- 筛选器 -->
+                        <div class="flex flex-wrap gap-4">
+                            <!-- 分类筛选 -->
+                            <div class="relative">
+                                <select id="category-filter" 
+                                    class="appearance-none pl-4 pr-10 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                                    <option value="all">全部分类</option>
+                                    <option value="programming">编程开发</option>
+                                    <option value="design">设计创意</option>
+                                    <option value="business">商业管理</option>
+                                    <option value="science">科学研究</option>
+                                </select>
+                                <i class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                            </div>
+                            
+                            <!-- 排序筛选 -->
+                            <div class="relative">
+                                <select id="sort-filter" 
+                                    class="appearance-none pl-4 pr-10 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                                    <option value="newest">最新上传</option>
+                                    <option value="downloads">下载最多</option>
+                                    <option value="views">浏览最多</option>
+                                </select>
+                                <i class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 资源列表 -->
+                <div id="resources-list" class="space-y-6">
+                    <!-- 导入：来自 allresource 文件夹的实际文件 -->
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-card hover-scale transition-all">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-sm font-medium px-3 py-1 bg-primary/10 text-primary rounded-full">课程资料</span>
+                                    <span class="text-sm text-gray-500">上传于本地</span>
+                                </div>
+                                <h3 class="text-2xl font-semibold mb-2">kuangbin的ACM模板（新）.pdf</h3>
+                                <p class="text-gray-600 mb-4">ACM 模板，包含常用代码片段与竞赛模板（来源：allresource）。</p>
+                                <div class="flex flex-wrap items-center gap-4 text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                        <span>PDF 文件</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <a href="allresource/kuangbin的ACM模板（新）.pdf" download="kuangbin_ACM_template.pdf" class="download-btn bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-200">
+                                    <i class="fa fa-download"></i>
+                                    <span>下载</span>
+                                </a>
+                                <a href="allresource/kuangbin的ACM模板（新）.pdf" target="_blank" class="ml-3 text-primary hover:underline">打开预览</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-card hover-scale transition-all">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-sm font-medium px-3 py-1 bg-primary/10 text-primary rounded-full">课程资料</span>
+                                    <span class="text-sm text-gray-500">上传于本地</span>
+                                </div>
+                                <h3 class="text-2xl font-semibold mb-2">大学概率论知识体系完整归纳与整理.docx</h3>
+                                <p class="text-gray-600 mb-4">概率论笔记整理（来源：allresource），建议下载查看或使用 Office/Word 打开。</p>
+                                <div class="flex flex-wrap items-center gap-4 text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fa fa-file-word-o"></i>
+                                        <span>DOCX 文件</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <a href="allresource/大学概率论知识体系完整归纳与整理.docx" download="概率论_知识体系.docx" class="download-btn bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg flex items-center gap-2 transition-all duration-200">
+                                    <i class="fa fa-download"></i>
+                                    <span>下载</span>
+                                </a>
+                                <a href="allresource/大学概率论知识体系完整归纳与整理.docx" target="_blank" class="ml-3 text-primary hover:underline">打开预览</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 分页 -->
+                <div class="flex justify-center mt-12">
+                    <nav class="flex items-center gap-1">
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors">
+                            <i class="fa fa-chevron-left"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-md bg-primary text-white">1</a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors">2</a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors">3</a>
+                        <span class="w-10 h-10 flex items-center justify-center text-gray-500">...</span>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors">8</a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors">
+                            <i class="fa fa-chevron-right"></i>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚已移除 -->
+
+    <!-- JavaScript -->
+    <script>
+        // 移动端菜单切换（增强可访问性并锁定 body 滚动）
+        (function(){
+            const btn = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (btn && mobileMenu) {
+                btn.setAttribute('aria-controls','mobile-menu');
+                btn.setAttribute('aria-expanded','false');
+                btn.addEventListener('click', function() {
+                    const open = !mobileMenu.classList.contains('hidden');
+                    mobileMenu.classList.toggle('hidden');
+                    btn.setAttribute('aria-expanded', String(!open));
+                    if (!open) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
+                });
+
+                window.addEventListener('resize', function(){
+                    if (window.innerWidth >= 768) {
+                        mobileMenu.classList.add('hidden');
+                        btn.setAttribute('aria-expanded','false');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            }
+        })();
+
+        // 导航栏滚动效果（调整有初始 padding 的 header）
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (!header) return;
+            if (window.scrollY > 50) {
+                header.classList.add('py-2', 'shadow-md');
+                header.classList.remove('py-4');
+            } else {
+                header.classList.add('py-4');
+                header.classList.remove('py-2', 'shadow-md');
+            }
+        });
+        
+        // 下载功能：仅在 href 无效或为占位符时拦截并提示；真实文件使用浏览器默认行为
+        document.querySelectorAll('.download-btn').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (!href || href === '#' || href.trim() === '') {
+                    e.preventDefault();
+                    const resourceTitleEl = this.closest('div').querySelector('h3');
+                    const resourceTitle = resourceTitleEl ? resourceTitleEl.textContent : '资源';
+                    alert(`资源 "${resourceTitle}" 链接无效，无法下载。`);
+                }
+                // 否则让浏览器处理下载（download 属性在链接上会提示保存）
+            });
+        });
+        
+        // 筛选功能
+        document.getElementById('category-filter').addEventListener('change', function() {
+            const selectedCategory = this.value;
+            filterResources(selectedCategory);
+        });
+        
+        document.getElementById('search-input').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            searchResources(searchTerm);
+        });
+        
+        // 根据URL参数设置初始筛选
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            
+            if (category) {
+                const categoryFilter = document.getElementById('category-filter');
+                categoryFilter.value = category;
+                filterResources(category);
+            }
+        });
+        
+        // 筛选资源函数
+        function filterResources(category) {
+            const resourceItems = document.querySelectorAll('#resources-list > div');
+            
+            resourceItems.forEach(item => {
+                const itemCategory = item.querySelector('span.rounded-full').textContent;
+                
+                if (category === 'all' || 
+                    (category === 'programming' && itemCategory === '编程开发') ||
+                    (category === 'design' && itemCategory === '设计创意') ||
+                    (category === 'business' && itemCategory === '商业管理') ||
+                    (category === 'science' && itemCategory === '科学研究')) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // 搜索资源函数
+        function searchResources(term) {
+            const resourceItems = document.querySelectorAll('#resources-list > div');
+            
+            resourceItems.forEach(item => {
+                const title = item.querySelector('h3').textContent.toLowerCase();
+                const description = item.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(term) || description.includes(term)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
