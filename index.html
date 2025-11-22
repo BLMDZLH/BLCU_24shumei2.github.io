@@ -21,7 +21,7 @@
                         neutral: '#6b7280',
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        sans: ['Hiragino Sans GB', 'system-ui', 'sans-serif'],
                     },
                 },
             }
@@ -45,17 +45,74 @@
             }
         }
     </style>
+    <!-- 修改原有的.page-bg-fixed样式为.section-bg -->
+    <style>
+    /* 为计算机专业网站和最新资源部分添加背景 */
+    #categories, .latest-resources-bg {
+        position: relative;
+    }
+    
+    #categories::before, .latest-resources-bg::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('image/background.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        background-attachment: fixed;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.98;
+    }
+    
+    /* 确保内容位于背景之上 */
+    #categories .container, .latest-resources-bg .container {
+        position: relative;
+        z-index: 1;
+    }
+    </style>
     <style>
         .raspberry-pattern {
-            background-image: radial-gradient(circle at 15% 25%, rgba(255,77,166,0.12) 0 5px, transparent 5px),
-                              radial-gradient(circle at 65% 45%, rgba(255,136,204,0.08) 0 6px, transparent 6px);
+            background-image: radial-gradient(circle at 15% 25%, rgba(255,77,166,0.38) 0 5px, transparent 5px),
+                              radial-gradient(circle at 65% 45%, rgba(255,136,204,0.32) 0 6px, transparent 6px);
             background-size: 120px 120px, 180px 180px;
             background-repeat: repeat;
         }
         .site-card a.site-link { color: inherit; text-decoration: none; }
     </style>
+    <style>
+        .click-image-wrap {
+            position: absolute;
+            pointer-events: none;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            transition: opacity 700ms ease, transform 700ms ease;
+            opacity: 1;
+            z-index: 10000;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+        .click-image-wrap img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border: none;
+            outline: none;
+            background: transparent;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+    <!-- 删除这行全局背景元素 -->
+    <div id="page-bg" class="page-bg-fixed" aria-hidden="true"></div>
     <!-- 导航栏 -->
     <header class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300 py-4">
         <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -87,8 +144,7 @@
     </header>
 
     <!-- 学生姓名气泡区域 -->
-    <!-- 学生姓名气泡区域 -->
-    <section id="student-bubbles" class="bg-gradient-to-t from-blue-50 to-pink-50">
+    <section id="student-bubbles" class="bg-gradient-to-t from-pink-200 to-blue-50">
         <div class="container mx-auto px-4 py-6">
             <div class="max-w-3xl mx-auto text-center">
                 <div class="relative overflow-visible h-64 md:h-80 flex items-center justify-center px-6">
@@ -98,6 +154,8 @@
         </div>
     </section>
 
+    <!-- 分割小白条 -->
+    <div class="w-full h-3 bg-pink-400"></div>
     <main class="flex-grow">
         <!-- 英雄区域 -->
         <section class="bg-gradient-to-r from-primary to-secondary text-white py-20 raspberry-pattern">
@@ -118,63 +176,67 @@
                 </div>
             </div>
         </section>
+
+    <!-- 分割小白条 -->
+    <div class="w-full h-3 bg-pink-400"></div>
         <!-- 资源分类 -->
-        <section id="categories" class="py-16 bg-gray-50">
+        <!-- 修改资源分类部分的背景色 -->
+        <section id="categories" class="py-16 bg-white">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold mb-4">计算机专业学生必备网站</h2>
-                    <p class="text-gray-600 max-w-2xl mx-auto">按用途分组，点击按钮可直接跳转到相应网站</p>
+                    <h2 class="text-3xl font-bold mb-4 text-white">计算机专业学生必备网站</h2>
+                    <p class="max-w-2xl mx-auto text-white">按用途分组，点击按钮可直接跳转到相应网站</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- 课程学习与知识提升 -->
-                    <div class="p-6 rounded-xl border shadow-card bg-gradient-to-r from-primary/10 to-secondary/10">
+                    <div class="p-6 rounded-xl border shadow-card bg-white/80">
                         <h3 class="font-semibold mb-3">一、课程学习与知识提升</h3>
                         <ul class="space-y-3">
                             <li class="site-card">
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg shadow hover:shadow-md transition-all text-primary inline-block w-full sm:w-auto text-center" href="https://www.imooc.com/" target="_blank" rel="noopener">
+                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg hover:bg-gray-100 shadow hover:shadow-md transition-all text-pink-500 inline-block w-full sm:w-auto text-center" style="background-color:#fff !important; color:#ec4899 !important;" href="https://www.imooc.com/" target="_blank" rel="noopener">
                                         <i class="fa fa-external-link mr-1"></i>慕课网（IMOOC）
                                     </a>
-                                    <div class="text-gray-600">专注 IT 技能培训，涵盖前端、Java、Python等大量课程</div>
+                                    <div class="text-black">专注 IT 技能培训，涵盖前端、Java、Python等大量课程</div>
                                 </div>
                             </li>
                             <li class="site-card">
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg shadow hover:shadow-md transition-all text-primary inline-block w-full sm:w-auto text-center" href="https://www.runoob.com/" target="_blank" rel="noopener">
+                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg hover:bg-gray-100 shadow hover:shadow-md transition-all text-pink-500 inline-block w-full sm:w-auto text-center" style="background-color:#fff !important; color:#ec4899 !important;" href="https://www.runoob.com/" target="_blank" rel="noopener">
                                         <i class="fa fa-external-link mr-1"></i>菜鸟教程
                                     </a>
-                                    <div class="text-gray-600">零基础友好，提供大量在线实例、基础教程与语法示例</div>
+                                    <div class="text-black">零基础友好，提供大量在线实例、基础教程与语法示例</div>
                                 </div>
                             </li>
                             <li class="site-card">
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg shadow hover:shadow-md transition-all text-primary inline-block w-full sm:w-auto text-center" href="http://csit.dhu.edu.cn" target="_blank" rel="noopener">
+                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg hover:bg-gray-100 shadow hover:shadow-md transition-all text-pink-500 inline-block w-full sm:w-auto text-center" style="background-color:#fff !important; color:#ec4899 !important;" href="http://csit.dhu.edu.cn" target="_blank" rel="noopener">
                                         <i class="fa fa-external-link mr-1"></i>东华大学计算机学院课件库
                                     </a>
-                                    <div class="text-gray-600">提供数据结构、操作系统、计算机网络等课堂课件</div>
+                                    <div class="text-black">提供数据结构、操作系统、计算机网络等课堂课件</div>
                                 </div>
                             </li>
                         </ul>
                     </div>
                 
-                    <div class="p-6 rounded-xl border shadow-card bg-white">
+                    <div class="p-6 rounded-xl border shadow-card bg-white/80">
                         <h3 class="font-semibold mb-3">二、专业知识深度拓展</h3>
                         <ul class="space-y-3">
                             <li>
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <a class="site-link font-medium bg-primary/10 px-4 py-2 rounded-lg hover:bg-primary/20 transition-all text-primary inline-block w-full sm:w-auto text-center" href="https://www.csdn.net/" target="_blank" rel="noopener">
+                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg shadow hover:shadow-md transition-all text-pink-500 inline-block w-full sm:w-auto text-center" href="https://www.csdn.net/" target="_blank" rel="noopener">
                                         <i class="fa fa-external-link mr-1"></i>CSDN
                                     </a>
-                                    <div class="text-gray-600">国内大型开发者社区，技术博客、问答与行业资讯并存</div>
+                                    <div class="text-black">国内大型开发者社区，技术博客、问答与行业资讯并存</div>
                                 </div>
                             </li>
                             <li>
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <a class="site-link font-medium bg-primary/10 px-4 py-2 rounded-lg hover:bg-primary/20 transition-all text-primary inline-block w-full sm:w-auto text-center" href="https://juejin.cn/" target="_blank" rel="noopener">
+                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg shadow hover:shadow-md transition-all text-pink-500 inline-block w-full sm:w-auto text-center" href="https://juejin.cn/" target="_blank" rel="noopener">
                                         <i class="fa fa-external-link mr-1"></i>掘金
                                     </a>
-                                    <div class="text-gray-600">聚焦前端/后端/移动等技术领域，优质文章与开源分享</div>
+                                    <div class="text-black">聚焦前端/后端/移动等技术领域，优质文章与开源分享</div>
                                 </div>
                             </li>
                         </ul>
@@ -183,20 +245,20 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <!-- 编程实践与算法训练 -->
-                    <div class="p-6 rounded-xl border shadow-card bg-white">
+                    <div class="p-6 rounded-xl border shadow-card bg-white/80">
                         <h3 class="font-semibold mb-3">三、编程实践与算法训练</h3>
                         <ul class="space-y-3">
                             <li>
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <a class="site-link font-medium bg-secondary/10 px-4 py-2 rounded-lg hover:bg-secondary/20 transition-all text-secondary inline-block w-full sm:w-auto text-center" href="https://www.nowcoder.com/" target="_blank" rel="noopener">
+                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg shadow hover:shadow-md transition-all text-pink-500 inline-block w-full sm:w-auto text-center" href="https://www.nowcoder.com/" target="_blank" rel="noopener">
                                         <i class="fa fa-external-link mr-1"></i>牛客网
                                     </a>
                                     <div class="text-gray-600">校招求职与算法训练平台，海量题库、企业真题与面试模拟</div>
                                 </div>
                             </li>
                             <li>
-<div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                    <a class="site-link font-medium bg-secondary/10 px-4 py-2 rounded-lg hover:bg-secondary/20 transition-all text-secondary inline-block w-full sm:w-auto text-center" href="https://leetcode-cn.com/" target="_blank" rel="noopener">
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <a class="site-link font-medium bg-white px-4 py-2 rounded-lg shadow hover:shadow-md transition-all text-pink-500 inline-block w-full sm:w-auto text-center" href="https://leetcode-cn.com/" target="_blank" rel="noopener">
                                         <i class="fa fa-external-link mr-1"></i>LeetCode（力扣）
                                     </a>
                                     <div class="text-gray-600">权威算法训练平台，支持多语言提交，题解与讨论丰富</div>
@@ -206,7 +268,7 @@
                     </div>
                 
                     <!-- 工具与资源辅助 -->
-                    <div class="p-6 rounded-xl border shadow-card bg-gradient-to-r from-secondary/10 to-primary/10">
+                    <div class="p-6 rounded-xl border shadow-card bg-white/80">
                         <h3 class="font-semibold mb-3">四、工具与资源辅助</h3>
                         <ul class="space-y-3">
                             <li>
@@ -232,11 +294,11 @@
         </section>
         
         <!-- 最新资源 -->
-        <section class="py-16 bg-white">
+        <section class="py-16 bg-white latest-resources-bg">
             <div class="container mx-auto px-4">
                 <div class="flex justify-between items-center mb-10">
-                    <h2 class="text-3xl font-bold">最新资源</h2>
-                    <a href="resources.html" class="text-primary font-medium flex items-center gap-2 hover:underline">
+                    <h2 class="text-3xl font-bold text-white">最新资源</h2>
+                    <a href="resources.html" class="text-primary font-medium flex items-center gap-2 hover:underline text-white">
                         <span>查看全部</span>
                         <i class="fa fa-arrow-right"></i>
                     </a>
@@ -245,8 +307,8 @@
                 <!-- 保留前七个资源卡片（来自 allresource 目录） -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- 卡片：常用算法合集及模板 -->
-                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
-                        <div class="bg-primary/10 p-4">
+                    <div class="bg-white/80 border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
+                        <div class="bg-white p-4">
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium px-3 py-1 bg-blue-100 text-blue-600 rounded-full">算法资料</span>
                                 <span class="text-sm text-gray-500">2025-11-18</span>
@@ -261,10 +323,10 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- 卡片：大学概率论知识体系完整归纳与整理 -->
-                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
-                        <div class="bg-primary/10 p-4">
+                    
+                    <!-- 修改每个资源卡片顶部的背景色 -->
+                    <div class="bg-white/80 border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
+                        <div class="bg-white p-4">
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium px-3 py-1 bg-primary/20 text-primary rounded-full">笔记整理</span>
                                 <span class="text-sm text-gray-500">2025-11-16</span>
@@ -272,7 +334,7 @@
                         </div>
                         <div class="p-6">
                             <h3 class="text-xl font-semibold mb-3 line-clamp-2">大学概率论知识体系完整归纳与整理</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2">系统整理概率论核心知识点，适合复习与备考。</p>
+                            <p class="text-gray-600 mb-4 line-clamp-2">系统整理概率论核心知识点，适合复习与备考，进行系统学习。</p>
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-1 text-gray-500 text-sm"><i class="fa fa-eye"></i><span>421</span></div>
                                 <a href="allresource/大学概率论知识体系完整归纳与整理.docx" download class="download-btn flex items-center gap-1 text-primary font-medium hover:text-secondary transition-colors"><i class="fa fa-download"></i><span>下载</span></a>
@@ -281,10 +343,10 @@
                     </div>
 
                     <!-- 卡片：数据结构知识体系完整归纳与整理 -->
-                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
-                        <div class="bg-primary/10 p-4">
+                    <div class="bg-white/80 border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
+                        <div class="bg-white p-4">
                             <div class="flex justify-between items-center">
-                                <span class="text-sm font-medium px-3 py-1 bg-secondary/10 text-secondary rounded-full">数据结构</span>
+                                <span class="text-sm font-medium px-3 py-1 bg-primary/20 text-primary rounded-full">数据结构</span>
                                 <span class="text-sm text-gray-500">2025-11-10</span>
                             </div>
                         </div>
@@ -292,33 +354,33 @@
                             <h3 class="text-xl font-semibold mb-3 line-clamp-2">数据结构知识体系完整归纳与整理</h3>
                             <p class="text-gray-600 mb-4 line-clamp-2">覆盖链表、树、图、排序与搜索等常见数据结构与实现要点。</p>
                             <div class="flex justify-between items-center">
-                                <div class="flex items-center gap-1 text-gray-500 text-sm"><i class="fa fa-eye"></i><span>634</span></div>
+                                <div class="flex items-center gap-1 text-gray-500 text-sm"><i class="fa fa-eye"></i><span>334</span></div>
                                 <a href="allresource/数据结构知识体系完整归纳与整理.docx" download class="download-btn flex items-center gap-1 text-primary font-medium hover:text-secondary transition-colors"><i class="fa fa-download"></i><span>下载</span></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- 卡片：人工智能原理 -->
-                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
-                        <div class="bg-primary/10 p-4">
+                    <div class="bg-white/80 border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
+                        <div class="bg-white p-4">
                             <div class="flex justify-between items-center">
-                                <span class="text-sm font-medium px-3 py-1 bg-accent/10 text-accent rounded-full">人工智能</span>
-                                <span class="text-sm text-gray-500">2025-10-22</span>
+                                <span class="text-sm font-medium px-3 py-1 bg-primary/20 text-primary rounded-full">人工智能</span>
+<span class="text-sm text-gray-500">2025-10-22</span>
                             </div>
                         </div>
                         <div class="p-6">
                             <h3 class="text-xl font-semibold mb-3 line-clamp-2">人工智能原理</h3>
                             <p class="text-gray-600 mb-4 line-clamp-2">基础概念、常见算法与应用示例，适合 AI 入门与课程复习。</p>
                             <div class="flex justify-between items-center">
-                                <div class="flex items-center gap-1 text-gray-500 text-sm"><i class="fa fa-eye"></i><span>512</span></div>
+                                <div class="flex items-center gap-1 text-gray-500 text-sm"><i class="fa fa-eye"></i><span>312</span></div>
                                 <a href="allresource/人工智能原理.docx" download class="download-btn flex items-center gap-1 text-primary font-medium hover:text-secondary transition-colors"><i class="fa fa-download"></i><span>下载</span></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- 卡片：大学数字信号处理 -->
-                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
-                        <div class="bg-primary/10 p-4">
+                    <div class="bg-white/80 border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
+                        <div class="bg-white p-4">
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium px-3 py-1 bg-blue-100 text-blue-600 rounded-full">信号处理</span>
                                 <span class="text-sm text-gray-500">2025-10-05</span>
@@ -335,8 +397,8 @@
                     </div>
 
                     <!-- 卡片：高等数学知识体系完整归纳与整理 -->
-                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
-                        <div class="bg-primary/10 p-4">
+                    <div class="bg-white/80 border border-gray-200 rounded-xl overflow-hidden shadow-card hover-scale">
+                        <div class="bg-white p-4">
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium px-3 py-1 bg-primary/20 text-primary rounded-full">高等数学</span>
                                 <span class="text-sm text-gray-500">2025-09-28</span>
@@ -352,21 +414,9 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- 移除从这里开始的冗余内容：
-                    1. 未完成的"资源卡片 8 - 新增"
-                    2. 重复的"资源卡片 2 - 新增"
-                    3. 重复的"资源卡片 3 - 新增"
-                    4. 重复的"资源卡片 4 - 新增"部分内容
-                -->
                 </section>
                 
-                <!-- 关于我们 已移除 -->
                 </main>
-
-                <!-- 页脚已移除，页面底部保持简洁 -->
-
-                <!-- JavaScript -->
                             <script>
                                 // 移动端菜单切换（增强可访问性并锁定 body 滚动）
                                 (function(){
@@ -392,6 +442,180 @@
                                             }
                                         });
                                     }
+                                })();
+                
+                                // 鼠标光标粒子与点击显示图片效果
+                                (function(){
+                                    const colors = [
+                                        'rgba(255,77,166,0.95)',
+                                        'rgba(255,153,204,0.88)',
+                                        'rgba(102,178,255,0.9)',
+                                        'rgba(166,102,255,0.9)',
+                                        'rgba(34,197,94,0.9)'
+                                    ];
+
+                                    const container = document.createElement('div');
+                                    container.id = 'cursor-bubbles';
+                                    document.body.appendChild(container);
+
+                                    let lastSpawn = 0;
+                                    const minInterval = 24; // ms between particle spawns (controls density)
+
+                                    function spawnBubble(x, y) {
+                                        const el = document.createElement('div');
+                                        el.className = 'cursor-bubble';
+                                        const size = Math.round(Math.random() * 10) + 6; // 6-16px
+                                        const color = colors[Math.floor(Math.random() * colors.length)];
+                                        const duration = Math.round(Math.random() * 600) + 900; // 900-1500ms trail
+                                        el.style.left = x + 'px';
+                                        el.style.top = y + 'px';
+                                        el.style.width = size + 'px';
+                                        el.style.height = size + 'px';
+                                        el.style.background = color;
+                                        el.style.opacity = '1';
+                                        el.style.transition = `transform ${duration}ms cubic-bezier(.2,.9,.3,1), opacity ${duration}ms ease-out`;
+                                        el.style.transform = 'translate(-50%, -50%) scale(1)';
+
+                                        container.appendChild(el);
+
+                                        // force reflow then animate to fade/translate
+                                        requestAnimationFrame(() => {
+                                            el.style.opacity = '0';
+                                            el.style.transform = 'translate(-50%, -70%) scale(0.6)';
+                                        });
+
+                                        setTimeout(() => { if (el && el.parentNode) el.parentNode.removeChild(el); }, duration + 60);
+                                    }
+
+                                    // throttle spawns
+                                    document.addEventListener('mousemove', function(e){
+                                        const now = Date.now();
+                                        if (now - lastSpawn > minInterval) {
+                                            spawnBubble(e.clientX, e.clientY);
+                                            spawnBubble(e.clientX + 10, e.clientY + 6);
+                                            lastSpawn = now;
+                                        }
+                                    });
+
+                                    // touch support
+                                    document.addEventListener('touchmove', function(e){
+                                        const t = e.touches[0];
+                                        if (!t) return;
+                                        const now = Date.now();
+                                        if (now - lastSpawn > minInterval) {
+                                            spawnBubble(t.clientX, t.clientY);
+                                            spawnBubble(t.clientX + 10, t.clientY + 6);
+                                            lastSpawn = now;
+                                        }
+                                    }, { passive: true });
+
+                    // 在运行时尝试去除图片的近白像素（如果图片本身带白边），并缓存处理结果以供后续使用
+                                    var _processedShumeiDataUrl = null;
+                                    // 更健壮的去白实现：优先尝试带 crossOrigin（便于线上 CORS 场景），失败后回退到不带 crossOrigin 的加载。
+                                    function makeTransparentPNG(src, fuzz, cb) {
+                                        fuzz = typeof fuzz === 'number' ? fuzz : 240;
+
+                                        function processImage(img) {
+                                            try {
+                                                const w = img.naturalWidth || img.width;
+                                                const h = img.naturalHeight || img.height;
+                                                const canvas = document.createElement('canvas');
+                                                canvas.width = w;
+                                                canvas.height = h;
+                                                const ctx = canvas.getContext('2d');
+                                                ctx.drawImage(img, 0, 0);
+                                                const data = ctx.getImageData(0, 0, w, h);
+                                                const px = data.data;
+                                                for (let i = 0; i < px.length; i += 4) {
+                                                    const r = px[i], g = px[i+1], b = px[i+2], a = px[i+3];
+                                                    if (a <= 16) continue; // 已透明或接近透明，跳过
+                                                    // 简单且稳健的去白判断：当平均亮度接近白色或每通道都接近白色时，将其透明化
+                                                    const avg = (r + g + b) / 3;
+                                                    if (avg >= fuzz || (r >= fuzz && g >= fuzz && b >= fuzz)) {
+                                                        px[i+3] = 0;
+                                                    }
+                                                }
+                                                ctx.putImageData(data, 0, 0);
+                                                const dataUrl = canvas.toDataURL('image/png');
+                                                cb(null, dataUrl);
+                                            } catch (err) {
+                                                cb(err);
+                                            }
+                                        }
+
+                                        // 尝试带 crossOrigin 加载（对线上资源有用），若失败再回退
+                                        const tryWithCross = function() {
+                                            const img = new Image();
+                                            try { img.crossOrigin = 'anonymous'; } catch(e) {}
+                                            img.onload = function() { processImage(img); };
+                                            img.onerror = function() {
+                                                // 回退，不设置 crossOrigin
+                                                const img2 = new Image();
+                                                img2.onload = function() { processImage(img2); };
+                                                img2.onerror = function(err) { cb(err || new Error('image load error')); };
+                                                img2.src = src;
+                                            };
+                                            img.src = src;
+                                        };
+
+                                        tryWithCross();
+                                    }
+
+                                    // 点击时在位置显示图片并淡出（优先使用已处理的透明图）
+                                    function showClickImage(x, y) {
+                                        const wrap = document.createElement('div');
+                                        wrap.className = 'click-image-wrap';
+
+                                        const img = document.createElement('img');
+                                        img.alt = '';
+
+                                        // size: 更小的默认显示尺寸：基于视口的 8%，且不超过 64px
+                                        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+                                        const size = Math.min(64, Math.round(vw * 0.08));
+                                        wrap.style.width = size + 'px';
+                                        wrap.style.height = size + 'px';
+                                        wrap.style.left = x + 'px';
+                                        wrap.style.top = y + 'px';
+
+                                        wrap.appendChild(img);
+                                        document.body.appendChild(wrap);
+
+                                        function startFade() {
+                                            requestAnimationFrame(() => {
+                                                setTimeout(() => {
+                                                    wrap.style.opacity = '0';
+                                                    wrap.style.transform = 'translate(-50%, -70%) scale(1.08)';
+                                                }, 20);
+                                            });
+                                            setTimeout(() => { if (wrap && wrap.parentNode) wrap.parentNode.removeChild(wrap); }, 820);
+                                        }
+
+                                        if (_processedShumeiDataUrl) {
+                                            img.src = _processedShumeiDataUrl;
+                                            startFade();
+                                            return;
+                                        }
+
+                                        // 先显示原始图片（快速响应），同时异步生成透明版本供下一次使用
+                                        img.src = 'image/shumei.png';
+                                        startFade();
+
+                                        // 异步处理并缓存结果（第一次处理）
+                                        if (_processedShumeiDataUrl === null) {
+                                            _processedShumeiDataUrl = false; // 标记为正在处理中
+                                            makeTransparentPNG('image/shumei.png', 240, function(err, dataUrl){
+                                                if (!err && dataUrl) _processedShumeiDataUrl = dataUrl; else _processedShumeiDataUrl = null;
+                                            });
+                                        }
+                                    }
+
+                                    document.addEventListener('click', function(e){
+showClickImage(e.clientX, e.clientY);
+                                    });
+
+                                    document.addEventListener('touchstart', function(e){
+                                        const t = e.touches[0]; if (!t) return; showClickImage(t.clientX, t.clientY);
+                                    }, { passive: true });
                                 })();
                     
                     // 导航栏滚动效果（调整有初始 padding 的 header）
@@ -424,7 +648,7 @@
                                 // 关闭移动端菜单
                                 document.getElementById('mobile-menu').classList.add('hidden');
                             }
-                        });
+});
                     });
                     
                     // 下载功能：只在链接无效时拦截并提示；真实文件链接保留浏览器默认行为以完成下载
@@ -454,7 +678,7 @@
                         font-weight: 700;
                         box-shadow: 0 10px 30px rgba(0,0,0,0.12);
                         opacity: 0;
-                        pointer-events: none;
+                        pointer-events: auto;
                         white-space: nowrap;
                         will-change: transform, opacity;
                         backdrop-filter: blur(0.6px);
@@ -485,6 +709,42 @@
                         .bubble { font-size: 12px; padding: 6px 10px; }
                         .bubbles-container { height: 48px; }
                     }
+                    /* 气泡交互：悬停时微放大 + 提亮色彩 + 提升阴影 */
+                    .bubble { transition: box-shadow 0.18s ease, opacity 0.22s ease, transform 0.22s ease; }
+                    .bubble-inner { display: inline-block; transition: transform 0.18s ease, filter 0.18s ease; }
+                    .bubble:hover { box-shadow: 0 14px 36px rgba(0,0,0,0.18); z-index: 30; }
+                    .bubble:hover .bubble-inner { transform: scale(1.06); filter: brightness(1.08) saturate(1.06); }
+                    /* 在触屏设备上增加触控目标感知（按下时给予反馈） */
+                    .bubble:active .bubble-inner { transform: scale(0.98); filter: brightness(0.98) saturate(0.98); }
+                    /* 点击后消失的样式 */
+                    .bubble.dismiss { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.95); }
+                    /* 光标粒子层：一组小气泡作为鼠标特效，pointer-events:none 不阻塞交互 */
+                    #cursor-bubbles { position: fixed; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: visible; }
+                    .cursor-bubble { position: absolute; border-radius: 999px; will-change: transform, opacity; pointer-events: none; mix-blend-mode: screen; }
+                    /* 点击后显示的图片容器（圆形裁剪，遮盖图片白色背景） */
+                    .click-image-wrap {
+                        position: absolute;
+                        pointer-events: none;
+                        width: 64px; /* 默认容器尺寸（可被 JS 覆盖） */
+                        height: 64px;
+                        border-radius: 50%;
+                        overflow: hidden; /* 裁切图片，避免白边可见 */
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+                        transform: translate(-50%, -50%) scale(1);
+                        transition: opacity 700ms ease, transform 700ms ease;
+                        opacity: 1;
+                        z-index: 10000;
+                        background: transparent;
+                    }
+                    .click-image-wrap img {
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover; /* 保持比例并裁切 */
+                        border: none;
+                        outline: none;
+                        background: transparent;
+                    }
                 </style>
 
                 <script>
@@ -510,9 +770,12 @@
                         function rand(min, max) { return Math.random() * (max - min) + min; }
                     
                         function createBubble(text) {
-                            const el = document.createElement('div');
-                            el.className = 'bubble';
-                            el.textContent = text;
+                                const el = document.createElement('div');
+                                el.className = 'bubble';
+                                const inner = document.createElement('span');
+                                inner.className = 'bubble-inner';
+                                inner.textContent = text;
+                                el.appendChild(inner);
                     
                             // 随机水平位置（扩大范围）
                             const leftPct = rand(2, 98);
@@ -549,11 +812,22 @@
                             el.style.background = g;
                     
                             container.appendChild(el);
-                    
-                            // 自动移除（动画结束后）
-                            setTimeout(() => {
+
+                            // 点击/触控交互：点击后淡出并移除
+                            let removeTimer = setTimeout(() => {
                                 if (el && el.parentNode) el.parentNode.removeChild(el);
                             }, duration + 500);
+
+                            const dismiss = () => {
+                                if (!el || el.classList.contains('dismiss')) return;
+                                el.classList.add('dismiss');
+                                el.style.pointerEvents = 'none';
+                                clearTimeout(removeTimer);
+                                setTimeout(() => { if (el && el.parentNode) el.parentNode.removeChild(el); }, 260);
+                            };
+
+                            el.addEventListener('click', function(e) { e.stopPropagation(); dismiss(); });
+                            el.addEventListener('touchstart', function(e) { e.stopPropagation(); dismiss(); }, { passive: true });
                         }
                     
                         // 更高频率产生气泡以营造丰富效果

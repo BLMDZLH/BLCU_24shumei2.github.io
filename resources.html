@@ -27,6 +27,36 @@
             }
         }
     </script>
+    <!-- 鼠标粒子与点击显示图片（与 index 同步的实现） -->
+    <style>
+        #cursor-bubbles { position: fixed; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: visible; }
+        .cursor-bubble { position: absolute; border-radius: 999px; will-change: transform, opacity; pointer-events: none; mix-blend-mode: screen; }
+        .click-image-wrap { position: absolute; pointer-events: none; width:64px; height:64px; border-radius:50%; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.18); transform:translate(-50%,-50%) scale(1); transition: opacity 700ms ease, transform 700ms ease; opacity:1; z-index:10000; background:transparent }
+        .click-image-wrap img { display:block; width:100%; height:100%; object-fit:cover; border:none; outline:none; background:transparent }
+    </style>
+    <script>
+        (function initCursorBubblesResources(){
+            if (document.getElementById('cursor-bubbles')) return;
+            const colors = ['rgba(255,77,166,0.95)','rgba(255,153,204,0.88)','rgba(102,178,255,0.9)','rgba(166,102,255,0.9)','rgba(34,197,94,0.9)'];
+            const container = document.createElement('div'); container.id = 'cursor-bubbles'; document.body.appendChild(container);
+            let lastSpawn = 0; const minInterval = 24;
+            function spawnBubble(x,y){ const el = document.createElement('div'); el.className='cursor-bubble'; const size = Math.round(Math.random()*10)+6; const color = colors[Math.floor(Math.random()*colors.length)]; const duration = Math.round(Math.random()*600)+900; el.style.left = x+'px'; el.style.top = y+'px'; el.style.width = size+'px'; el.style.height = size+'px'; el.style.background = color; el.style.opacity='1'; el.style.transition = `transform ${duration}ms cubic-bezier(.2,.9,.3,1), opacity ${duration}ms ease-out`; el.style.transform='translate(-50%,-50%) scale(1)'; container.appendChild(el); requestAnimationFrame(()=>{ el.style.opacity='0'; el.style.transform='translate(-50%,-70%) scale(0.6)'; }); setTimeout(()=>{ if(el&&el.parentNode) el.parentNode.removeChild(el); }, duration+60); }
+            document.addEventListener('mousemove', function(e){ const now = Date.now(); if(now-lastSpawn>minInterval){ spawnBubble(e.clientX,e.clientY); lastSpawn=now; } });
+            document.addEventListener('touchmove', function(e){ const t=e.touches[0]; if(!t) return; const now=Date.now(); if(now-lastSpawn>minInterval){ spawnBubble(t.clientX,t.clientY); lastSpawn=now; } }, {passive:true});
+
+            var _resProcessedShumei = null;
+            function makeTransparentPNGRes(src, fuzz, cb){ fuzz = typeof fuzz === 'number' ? fuzz : 240; function processImage(img){ try{ const w = img.naturalWidth||img.width, h=img.naturalHeight||img.height; const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h; const ctx=canvas.getContext('2d'); ctx.drawImage(img,0,0); const data=ctx.getImageData(0,0,w,h); const px=data.data; for(let i=0;i<px.length;i+=4){ const r=px[i],g=px[i+1],b=px[i+2],a=px[i+3]; if(a<=16) continue; const avg=(r+g+b)/3; if(avg>=fuzz || (r>=fuzz&&g>=fuzz&&b>=fuzz)){ px[i+3]=0; } } ctx.putImageData(data,0,0); cb(null, canvas.toDataURL('image/png')); }catch(err){ cb(err); } }
+                const img = new Image(); try{ img.crossOrigin='anonymous'; }catch(e){}; img.onload=function(){ processImage(img); }; img.onerror=function(){ const img2=new Image(); img2.onload=function(){ processImage(img2); }; img2.onerror=function(err){ cb(err||new Error('image load error')); }; img2.src=src; }; img.src=src;
+            }
+
+            function showClickImageAtRes(x,y){ const wrap=document.createElement('div'); wrap.className='click-image-wrap'; const img=document.createElement('img'); img.alt=''; const vw = Math.max(document.documentElement.clientWidth||0, window.innerWidth||0); const size = Math.min(64, Math.round(vw*0.08)); wrap.style.width = size+'px'; wrap.style.height = size+'px'; wrap.style.left = x+'px'; wrap.style.top = y+'px'; wrap.appendChild(img); document.body.appendChild(wrap); function startFade(){ requestAnimationFrame(()=>{ setTimeout(()=>{ wrap.style.opacity='0'; wrap.style.transform='translate(-50%,-70%) scale(1.08)'; },20); }); setTimeout(()=>{ if(wrap&&wrap.parentNode) wrap.parentNode.removeChild(wrap); },820); }
+                if(_resProcessedShumei){ img.src=_resProcessedShumei; startFade(); return; }
+                img.src='image/shumei.png'; startFade(); if(_resProcessedShumei===null){ _resProcessedShumei=false; makeTransparentPNGRes('image/shumei.png',240,function(err,dataUrl){ if(!err&&dataUrl) _resProcessedShumei=dataUrl; else _resProcessedShumei=null; }); }
+            }
+            document.addEventListener('click', function(e){ showClickImageAtRes(e.clientX,e.clientY); });
+            document.addEventListener('touchstart', function(e){ const t=e.touches[0]; if(!t) return; showClickImageAtRes(t.clientX,t.clientY); }, {passive:true});
+        })();
+    </script>
     
     <!-- 自定义工具类 -->
     <style type="text/tailwindcss">
@@ -56,6 +86,8 @@
         /* 移动端优化：响应式媒体与更大触控目标 */
         .download-btn { min-height: 44px; }
         .download-btn i { pointer-events: none; }
+        img, iframe, video { max-width: 100%; height: auto; }
+
         img, iframe, video { max-width: 100%; height: auto; }
 
         @media (max-width:420px) {
@@ -488,6 +520,8 @@
             </div>
         </section>
     </main>
+
+    <!-- 页脚已移除 -->
 
     <!-- 页脚已移除 -->
 

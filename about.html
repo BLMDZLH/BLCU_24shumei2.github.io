@@ -80,11 +80,36 @@
                 </div>
             </div>
         </section>
+
+        <!-- 在班级相册部分结束后添加班级成员模块 -->
+        <section class="py-12">
+            <div class="container mx-auto px-4">
+                <div class="bg-white rounded-xl shadow-card p-6">
+                    <h2 class="text-2xl font-semibold mb-6">班级成员</h2>
+                    
+                    <!-- 班级成员卡片网格 -->
+                    <div id="class-members-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- 学生信息将通过JavaScript动态生成 -->
+                    </div>
+                    
+                    <!-- 分页控件 -->
+                    <div id="pagination" class="mt-8 flex justify-center items-center space-x-2">
+                        <button id="prev-page" class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            <i class="fa fa-chevron-left mr-1"></i> 上一页
+                        </button>
+                        <div id="page-numbers" class="flex justify-center space-x-1"></div>
+                        <button id="next-page" class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">
+                            下一页 <i class="fa fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script>
         // mobile menu accessibility + body lock
-        (function(){
+        (function(){ 
             const btn = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             if (btn && mobileMenu) {
@@ -99,7 +124,90 @@
                 window.addEventListener('resize', function(){ if (window.innerWidth >= 768) { mobileMenu.classList.add('hidden'); btn.setAttribute('aria-expanded','false'); document.body.classList.remove('overflow-hidden'); } });
             }
         })();
+    </script>
+    
+    <!-- 鼠标粒子与点击显示图片（与 index 同步的实现） -->
+    <style>
+        #cursor-bubbles { position: fixed; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: visible; }
+        .cursor-bubble { position: absolute; border-radius: 999px; will-change: transform, opacity; pointer-events: none; mix-blend-mode: screen; }
+        .click-image-wrap { position: absolute; pointer-events: none; width:64px; height:64px; border-radius:50%; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.18); transform:translate(-50%,-50%) scale(1); transition: opacity 700ms ease, transform 700ms ease; opacity:1; z-index:10000; background:transparent }
+        .click-image-wrap img { display:block; width:100%; height:100%; object-fit:cover; border:none; outline:none; background:transparent }
+    </style>
+    <!-- 移除图片处理相关代码，简化点击显示图片功能 -->
+    <script>
+        (function initCursorBubblesAbout(){
+            if (document.getElementById('cursor-bubbles')) return; // 防止重复初始化
+            const colors = ['rgba(255,77,166,0.95)','rgba(255,153,204,0.88)','rgba(102,178,255,0.9)','rgba(166,102,255,0.9)','rgba(34,197,94,0.9)'];
+            const container = document.createElement('div'); container.id = 'cursor-bubbles'; document.body.appendChild(container);
+            let lastSpawn = 0; const minInterval = 24;
+            function spawnBubble(x,y){
+                const el = document.createElement('div'); el.className='cursor-bubble';
+                const size = Math.round(Math.random()*10)+6; const color = colors[Math.floor(Math.random()*colors.length)];
+                const duration = Math.round(Math.random()*600)+900;
+                el.style.left = x+'px'; el.style.top = y+'px'; el.style.width = size+'px'; el.style.height = size+'px'; el.style.background = color; el.style.opacity='1';
+                el.style.transition = `transform ${duration}ms cubic-bezier(.2,.9,.3,1), opacity ${duration}ms ease-out`;
+                el.style.transform='translate(-50%,-50%) scale(1)'; container.appendChild(el);
+                requestAnimationFrame(()=>{ el.style.opacity='0'; el.style.transform='translate(-50%,-70%) scale(0.6)'; });
+                setTimeout(()=>{ if(el&&el.parentNode) el.parentNode.removeChild(el); }, duration+60);
+            }
+            document.addEventListener('mousemove', function(e){ const now = Date.now(); if(now-lastSpawn>minInterval){ spawnBubble(e.clientX,e.clientY); spawnBubble(e.clientX+10,e.clientY+6); lastSpawn=now; } });
+            document.addEventListener('touchmove', function(e){ const t=e.touches[0]; if(!t) return; const now=Date.now(); if(now-lastSpawn>minInterval){ spawnBubble(t.clientX,t.clientY); spawnBubble(t.clientX+10,t.clientY+6); lastSpawn=now; } }, {passive:true});
 
+            // 简化的点击显示图片功能
+            function showClickImageAtAbout(x,y){
+                const wrap = document.createElement('div'); wrap.className='click-image-wrap';
+                const img = document.createElement('img'); img.alt = '';
+                const vw = Math.max(document.documentElement.clientWidth||0, window.innerWidth||0);
+                const size = Math.min(64, Math.round(vw*0.08));
+                wrap.style.width = size + 'px'; wrap.style.height = size + 'px';
+                wrap.style.left = x + 'px'; wrap.style.top = y + 'px'; wrap.appendChild(img); document.body.appendChild(wrap);
+                
+                function startFade(){
+                    requestAnimationFrame(()=>{ 
+                        setTimeout(()=>{ 
+                            wrap.style.opacity='0'; 
+                            wrap.style.transform='translate(-50%,-70%) scale(1.08)'; 
+                        },20); 
+                    }); 
+                    setTimeout(()=>{ if(wrap&&wrap.parentNode) wrap.parentNode.removeChild(wrap); },820); 
+                }
+                
+                // 直接使用原始图片
+                img.src='image/shumei.png';
+                startFade();
+            }
+            
+            document.addEventListener('click', function(e){ showClickImageAtAbout(e.clientX,e.clientY); });
+            document.addEventListener('touchstart', function(e){ const t=e.touches[0]; if(!t) return; showClickImageAtAbout(t.clientX,t.clientY); }, {passive:true});
+        })();
+    </script>
+    
+    <style>
+        .click-image-wrap {
+            position: absolute;
+            pointer-events: none;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            transition: opacity 700ms ease, transform 700ms ease;
+            opacity: 1;
+            z-index: 10000;
+            background: transparent;
+            border: none; /* 确保没有边框 */
+            box-shadow: none; /* 移除可能导致视觉边框的阴影 */
+        }
+        .click-image-wrap img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 使用contain确保完整显示图片 */
+            border: none;
+            outline: none;
+            background: transparent;
+        }
+    </style>
+    <script>
         // 填充占位卡片
         (function(){
             const grid = document.querySelector('.grid');
@@ -111,5 +219,258 @@
             }
         })();
     </script>
+
+    <!-- 班级成员分页功能 -->
+    <script>
+        // 班级成员数据
+        const classMembers = [
+            {
+                name: "吴雨凡",
+                bio: "大家好，我24级信科数媒2班的吴雨凡。一个普通人，喜欢平淡安静的生活。"
+            },
+            {
+                name: "余晨阳",
+                bio: "我叫余晨阳，来自湖南岳阳，是个i人，平时喜欢踢球，打游戏，看动漫"
+            },
+            {
+                name: "王彬宇",
+                bio: "我叫王彬宇，来自24数媒2班，喜欢打游戏，听音乐，追求于挑战自己的极限，乐于参加竞速有关的挑战（当然大多数都是游戏）。本人也为天文社的一员，对于观星有很大的乐趣，但对天文的知识只能说是一言难尽。可我会继续努力提升自己，无论是在天文，还是我的日常学习。"
+            },
+            {
+                name: "伍政名",
+                bio: "我是来自云南的伍政名，兴趣是跑步锻炼和品尝美食，对游戏动漫也有所涉猎，希望能和大家相处愉快"
+            },
+            {
+                name: "王怡雯",
+                bio: "大家好，我叫王怡雯，爱好网上冲浪，是低精力&低社交能量的i人。高兴的和朋友们一起努力学习，不断精进"
+            },
+            {
+                name: "黄鑫",
+                bio: "大家好！我是黄鑫！爱追综艺的快乐收割机，日常发掘好玩的事～偶尔脑洞大开，热爱分享！！"
+            },
+            {
+                name: "王偲潼",
+                bio: "大家好我叫王偲潼，我性格特别开朗，不管跟熟不熟的人都能很快聊起来，而且特别愿意听大家的想法，就算有不同意见，也喜欢笑着跟大家一起商量，不会让气氛变僵～"
+            },
+            {
+                name: "王博文",
+                bio: "大家好，我叫王博文，来自吉林白城，兴趣爱好是打羽毛球，偶尔也会打打游戏，很希望能结识一起学习的朋友，让我们共同进步。"
+            },
+            {
+                name: "王亚楠",
+                bio: "大家好，我是王亚楠，喜欢画画，也喜欢小猫小狗。高兴认识大家，期待和你们一起度过充实又美好的时光！"
+            },
+            {
+                name: "韩卿琼",
+                bio: "大家好我是韩卿琼，06年白羊座♈，喜欢冒险与挑战，以及一切新鲜事物，很高兴认识你！"
+            },
+            {
+                name: "朱胤合",
+                bio: "朱胤合，男，06年生，数媒2班普通人，爱好打打游戏画点画，健健身跳点舞啥的。每天都在用力在北语生存[发呆]希望来找我的都有好事，累了coding去了，再见[惊讶]"
+            },
+            {
+                name: "杨利腾",
+                bio: "大家好，我叫杨利腾，来自贵州安顺。最近正在开发一个游戏项目中，如果有对游戏开发感兴趣的同学，我们可以互相交流学习一下。"
+            },
+            {
+                name: "吴静",
+                bio: "大家好，我是吴静，24信科数媒2班的学生，喜欢动漫和游戏，性格随和，期待和大家共创精彩。"
+            },
+            {
+                name: "孟繁琪",
+                bio: "只是一个平平无奇的东北口音拥有者兼脆皮草原的小女孩罢了"
+            },
+            {
+                name: "汪露垚",
+                bio: "嗨喽大家好，我是汪露垚，很高兴能够成为24数媒2班的一份子。我喜欢画画和唱歌，欢迎有共同兴趣爱好的朋友来找我玩呀~"
+            },
+            {
+                name: "朱宇文",
+                bio: "大家好，我是数媒2班的朱宇文，我有很多兴趣爱好，例如打篮球踢足球打游戏等等，希望可以和大家交朋友"
+            },
+            {
+                name: "孙荣旺",
+                bio: "大家好，我叫孙荣旺，来自河南。性格开朗，待人真诚，平时喜欢探索新鲜事物，期待和大家多多交流～"
+            },
+            {
+                name: "王俊人",
+                bio: "大家好！我是数媒2班的王俊人。我本人正如我们队名一样，卷不动但接着学[呲牙]。我的兴趣爱好非常广泛，啥都可以和你聊两句，你分享欲强的时候我也很乐意作为一个倾听者。"
+            },
+            {
+                name: "林渡",
+                bio: "大家好！我是24级信科学院数媒2班的林渡！平常喜欢citywalk，爱运动、听音乐！我性格随和，慢热。"
+            },
+            {
+                name: "窦英杰",
+                bio: "大家好呀！我是窦英杰～运动上爱踢足球和踏青，娱乐上沉迷电影和游戏，文学上喜爱宋词，很高兴和大家相识！"
+            },
+            {
+                name: "黄恺辰",
+                bio: "我叫黄恺辰，很高兴认识大家。"
+            },
+            {
+                name: "贺扬",
+                bio: "大家好，我的名字叫贺扬，是北京语言大学2024级数媒2班的一名学生，没什么特长，爱好是足球，喜欢看比赛，希望自己的学习能在大学生活中取得进步。"
+            },
+            {
+                name: "叶可",
+                bio: "大家好，我叫叶可，来自数媒2班。我的爱好是打乒乓球打羽毛球，旅游摄影，听音乐打游戏。很高兴认识大家"
+            },
+            {
+                name: "罗美凤",
+                bio: "大家好，我叫罗美凤，来自云南，性格随和好相处，平时喜欢看电影电视剧解说，最喜欢动画《爆笑虫子》。"
+            },
+            {
+                name: "门志慧",
+                bio: "我是门志慧，爱折腾新鲜东西，日常喜欢打打游戏，聊聊天，期待和小组一起卷赢期末！"
+            },
+            {
+                name: "赵婧彤",
+                bio: "大家好我是数媒二班赵婧彤，欢迎大家来找我玩。"
+            },
+            {
+                name: "王春懿",
+                bio: "大家好，我叫王春懿，来自云南昆明。平常喜欢看看小说听听歌，旅游摄影，很高兴认识大家。"
+            },
+            {
+                name: "王宇航",
+                bio: "大家好我叫王宇航请多关照请多关照请多关照！"
+            },
+            {
+                name: "童钰博",
+                bio: "大家好，我叫童钰博"
+            },
+            {
+                name: "李锦程",
+                bio: "我叫李锦程，来自河南新乡，性格比较内向，但熟悉后就好了，平时喜欢听音乐散步在网上冲浪。"
+            },
+            {
+                name: "胡昕",
+                bio: "大家好，我是胡昕。家乡是江西省鄱阳县，那里有碧波荡漾的鄱阳湖，风景如画。我平时比较喜欢做手工和绘画。"
+            },
+            {
+                name: "杨明举",
+                bio: "我是来自树莓2班的杨明举，本人是一名贵州娃，家在丘陵下。是一名资深的游戏迷，喜欢打各种射击类游戏，励志成为一名独立的游戏开发者和后期渲染者"
+            },
+            {
+                name: "张雨欣",
+                bio: "halo！我是张雨欣，性格随和，平时喜欢琢磨各种新鲜事，很高兴认识大家～"
+            },
+            {
+                name: "赵佳怡",
+                bio: "大家好！我是赵佳怡，来自甘肃陇南，mbti总变幻不定，可i可e，随时切换，热爱尝试新鲜事物，也愿意交更多的朋友，欢迎大家来找我玩啊~"
+            },
+            {
+                name: "叶张画",
+                bio: "大家好我是叶张画，我来自浙江安吉。我的爱好是发呆、健身、画画和音乐。我的mbti是isfp和istj的摇摆，乐于当透明人。以上就是我的自我介绍。"
+            },
+            {
+                name: "高嫣然",
+                bio: "我叫高嫣然，赛博八字是infj金牛，平时喜欢打打球，希望能和大家友好相处创造更多的美好回忆！"
+            },
+            {
+                name: "梅鸿景",
+                bio: "性别不详，身份不详\n个性签名:这个人很懒，没有留下什么线索"
+            },
+            {
+                name: "李浩洋",
+                bio: "李浩洋，一个普通的人类，无不良嗜好，只要摆烂摆的够快就没有问题能难住我哈哈哈哈哈哈哈哈哈哈哈（哈哈哈仅用来水字数）"
+            },
+            {
+                name: "李心玥",
+                bio: "李心玥|游戏/晒太阳，性格随和，欢迎交友~"
+            }
+        ];
+
+        // 分页配置
+        const itemsPerPage = 6;
+        let currentPage = 1;
+        const totalPages = Math.ceil(classMembers.length / itemsPerPage);
+
+        // 获取DOM元素
+        const container = document.getElementById('class-members-container');
+        const prevPageBtn = document.getElementById('prev-page');
+        const nextPageBtn = document.getElementById('next-page');
+        const pageNumbersContainer = document.getElementById('page-numbers');
+
+        // 颜色数组用于生成不同的头像背景色
+        const avatarColors = [
+            { bg: 'bg-primary/10', text: 'text-primary' },
+            { bg: 'bg-secondary/10', text: 'text-secondary' },
+            { bg: 'bg-blue-100', text: 'text-blue-500' },
+            { bg: 'bg-green-100', text: 'text-green-500' },
+            { bg: 'bg-purple-100', text: 'text-purple-500' },
+            { bg: 'bg-yellow-100', text: 'text-yellow-500' },
+            { bg: 'bg-pink-100', text: 'text-pink-500' },
+            { bg: 'bg-indigo-100', text: 'text-indigo-500' }
+        ];
+
+        // 渲染当前页的班级成员
+        function renderClassMembers() {
+            container.innerHTML = '';
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const currentMembers = classMembers.slice(startIndex, endIndex);
+
+            currentMembers.forEach((member, index) => {
+                const colorIndex = (startIndex + index) % avatarColors.length;
+                const color = avatarColors[colorIndex];
+                
+                const memberCard = document.createElement('div');
+                memberCard.className = 'bg-gray-50 rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow';
+                memberCard.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 ${color.bg} rounded-full flex items-center justify-center ${color.text}">
+                            <i class="fa fa-user text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-medium ml-4 text-gray-800">${member.name}</h3>
+                    </div>
+                    <p class="text-gray-600">${member.bio}</p>
+                `;
+                container.appendChild(memberCard);
+            });
+
+            updatePagination();
+        }
+
+        // 更新分页控件
+        function updatePagination() {
+            // 更新上一页/下一页按钮状态
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages;
+
+            // 更新页码
+            pageNumbersContainer.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `px-3 py-1 rounded-md text-sm ${i === currentPage ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderClassMembers();
+                });
+                pageNumbersContainer.appendChild(pageBtn);
+            }
+        }
+
+        // 事件监听
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderClassMembers();
+            }
+        });
+
+        nextPageBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderClassMembers();
+            }
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', renderClassMembers);
+    </script>
+
 </body>
 </html>
