@@ -6,6 +6,9 @@
     <title>关于我们 - We are 24树莓2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
     <script>
         tailwind.config = {
             theme: {
@@ -54,7 +57,7 @@
         <section class="bg-gradient-to-r from-primary to-secondary text-white py-12 raspberry-pattern">
             <div class="container mx-auto px-4">
                 <h1 class="text-3xl md:text-4xl font-bold">关于我们</h1>
-                <p class="mt-2 opacity-90">这是 We are 24树莓2 班级的简介与同学相册入口页。下面会展示班级同学的照片（暂未添加）。</p>
+                <p class="mt-2 opacity-90">这是 We are 24树莓2 班级的简介与同学相册入口页。下面会展示班级同学的照片。</p>
             </div>
         </section>
 
@@ -62,24 +65,177 @@
             <div class="container mx-auto px-4">
                 <div class="bg-white rounded-xl shadow-card p-6">
                     <h2 class="text-2xl font-semibold mb-4">班级相册</h2>
-                    <p class="text-gray-600 mb-6">同学照片将会出现在下面的网格中。目前照片尚未上传，页面以占位卡片展示。</p>
+                    <p class="mb-6 text-gray-600">下面是我们班级的精彩瞬间，点击左右箭头或等待自动播放来浏览更多照片！</p>
 
-                    <!-- 占位网格 -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        <!-- 12 placeholder cards -->
-                        <!-- 用户可根据实际照片数量添加或替换这些卡片 -->
-                        <template id="placeholder-card">
-                            <div class="flex flex-col items-center p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                                <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-gray-400 text-xl"><i class="fa fa-user"></i></div>
-                                <div class="mt-3 text-sm text-gray-600">照片暂未添加</div>
-                            </div>
-                        </template>
+                    <!-- 班级相册轮播（使用 picture/ 文件夹图片） -->
+                    <div class="relative w-full">
+                        <div id="class-slideshow" class="relative w-full rounded-lg overflow-hidden bg-gray-100" style="height:min(70vh,800px);">
+                            <!-- slides will be injected by JavaScript -->
+                        </div>
 
-                        <!-- render placeholders via JS for neat markup -->
+                        <button id="sl-prev" aria-label="上一张" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow">‹</button>
+                        <button id="sl-next" aria-label="下一张" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow">›</button>
+
+                        <div id="sl-indicators" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2"></div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- 班级互助小组模块（新增） -->
+        <section class="py-12">
+            <div class="container mx-auto px-4">
+                <div class="bg-white rounded-xl shadow-card p-6">
+                    <h2 class="text-2xl font-semibold mb-4">班级互助小组</h2>
+                    <p class="mb-4 text-gray-600">左右翻页来看我们的互助小组吧！。</p>
+
+                    <div id="group-card" class="flex flex-col md:flex-row items-stretch gap-6">
+                        <div id="group-photo" class="md:w-1/3 rounded-lg overflow-hidden flex items-center justify-center text-center p-0" aria-hidden="false">
+                            <!-- 图片由脚本动态填充（按 picture/ 中的图片顺序分配） -->
+                        </div>
+                        <div class="flex-1">
+                            <h3 id="group-name" class="text-2xl font-bold mb-2">互助小组 1</h3>
+                            <p id="group-slogan" class="text-gray-600 mb-4">小组口号占位</p>
+                            <div>
+                                <h4 class="font-medium mb-2">小组成员</h4>
+                                <ul id="group-members" class="list-disc list-inside text-gray-700"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex items-center justify-center space-x-3">
+                        <button id="group-prev" class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 disabled:opacity-50" disabled>上一页</button>
+                        <div id="group-pages" class="flex items-center space-x-2"></div>
+                        <button id="group-next" class="px-4 py-2 rounded-md border border-gray-300 text-gray-700">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            (function(){
+                const groups = [
+                    {
+                        id: 1,
+                        name: '锦鲤附体队',
+                        slogan: '转发这条锦鲤，好运实力双临',
+                        members: ['黄鑫','赵佳怡','王亚楠','王偲潼','王博文']
+                    },
+                    {
+                        id: 2,
+                        name: '秃击队',
+                        slogan: '聪明绝顶 期末秃击',
+                        members: ['韩卿琼','孟繁琪','朱胤合','吴静','杨利腾']
+                    },
+                    {
+                        id: 3,
+                        name: '带薪摸鱼队',
+                        slogan: '上班摸鱼，下班摸奖',
+                        members: ['胡昕','张雨欣','杨明举','童钰博','李锦程']
+                    },
+                    {
+                        id: 4,
+                        name: '卷不动但接着学队',
+                        slogan: '卷不动也不躺平，稳步向前赢到底！',
+                        members: ['汪露垚','朱宇文','孙荣旺','王俊人','林渡']
+                    },
+                    {
+                        id: 5,
+                        name: '第一名队',
+                        slogan: '第一名，我们来了',
+                        members: ['王宇航','赵婧彤','罗美凤','门志慧','王春懿']
+                    },
+                    {
+                        id: 6,
+                        name: '码力队',
+                        slogan: '码出效率，力破难关',
+                        members: ['吴雨凡','王怡雯','王彬宇','余晨阳','伍政名']
+                    },
+                    {
+                        id: 7,
+                        name: '不知道叫什么队',
+                        slogan: '行到水穷处，坐看云起时，我心无需多言语，相逢何必急相知',
+                        members: ['叶张画','梅鸿景','李心玥','李浩洋','高嫣然']
+                    },
+                    {
+                        id: 8,
+                        name: '8bit',
+                        slogan: '8bit小像素，八组笑嘟嘟',
+                        members: ['窦英杰','叶可','贺扬','黄恺辰','姜博涵']
+                    }
+                ];
+
+                // 优先从 `group/` 文件夹加载小组图片（group/group-{id}.jpg 或 .png）
+                let currentGroup = 1;
+                const nameEl = document.getElementById('group-name');
+                const sloganEl = document.getElementById('group-slogan');
+                const membersEl = document.getElementById('group-members');
+                const photoEl = document.getElementById('group-photo');
+                const prevBtn = document.getElementById('group-prev');
+                const nextBtn = document.getElementById('group-next');
+                const pagesEl = document.getElementById('group-pages');
+
+                function renderGroup(idx){
+                    const g = groups[idx-1];
+                    if(!g) return;
+                    nameEl.textContent = g.name;
+                    sloganEl.textContent = g.slogan;
+                    membersEl.innerHTML = '';
+                    g.members.forEach(m=>{ const li=document.createElement('li'); li.textContent = m; membersEl.appendChild(li); });
+
+                    // 更新照片：优先加载 image/group-{id}.jpg，若不存在则回退到渐变占位
+                    photoEl.innerHTML = '';
+                    const imgEl = document.createElement('img');
+                    imgEl.alt = `${g.name} 照片`;
+                    imgEl.className = 'w-full h-48 md:h-full object-cover rounded-lg';
+                    // 依次尝试：group/{id}.jpg -> group/group-{id}.jpg -> group/{id}.png -> group/group-{id}.png
+                    const candidates = [
+                        `group/${g.id}.jpg`,
+                        `group/group-${g.id}.jpg`,
+                        `group/${g.id}.png`,
+                        `group/group-${g.id}.png`
+                    ];
+                    let tryIndex = 0;
+                    function tryNext(){
+                        if(tryIndex >= candidates.length){
+                            // 没有可用图片，显示占位
+                            photoEl.innerHTML = '';
+                            const ph = document.createElement('div');
+                            ph.className = 'w-full h-48 md:h-full flex items-center justify-center text-white p-4 rounded-lg bg-gradient-to-br from-primary to-secondary';
+                            ph.innerHTML = `<div><div class="text-lg font-semibold">组 ${g.id} 照片占位</div><div class="text-sm opacity-80 mt-1">（无可用图片）</div></div>`;
+                            photoEl.appendChild(ph);
+                            return;
+                        }
+                        imgEl.src = candidates[tryIndex];
+                        tryIndex++;
+                    }
+
+                    imgEl.onerror = function(){ tryNext(); };
+                    // start trying
+                    tryNext();
+                    // append img element (will show and onerror handle missing files)
+                    photoEl.appendChild(imgEl);
+
+                    // 更新分页样式
+                    pagesEl.innerHTML = '';
+                    for(let i=1;i<=groups.length;i++){
+                        const btn=document.createElement('button');
+                        btn.className = `px-3 py-1 rounded-md text-sm ${i===idx? 'bg-primary text-white':'bg-gray-100 text-gray-700 hover:bg-gray-200'}`;
+                        btn.textContent = i;
+                        btn.addEventListener('click', ()=>{ currentGroup = i; renderGroup(currentGroup); });
+                        pagesEl.appendChild(btn);
+                    }
+
+                    prevBtn.disabled = idx===1;
+                    nextBtn.disabled = idx===groups.length;
+                }
+
+                prevBtn.addEventListener('click', ()=>{ if(currentGroup>1){ currentGroup--; renderGroup(currentGroup); } });
+                nextBtn.addEventListener('click', ()=>{ if(currentGroup<groups.length){ currentGroup++; renderGroup(currentGroup); } });
+
+                document.addEventListener('DOMContentLoaded', ()=>{ renderGroup(currentGroup); });
+            })();
+        </script>
 
         <!-- 在班级相册部分结束后添加班级成员模块 -->
         <section class="py-12">
@@ -208,16 +364,163 @@
         }
     </style>
     <script>
-        // 填充占位卡片
-        (function(){
-            const grid = document.querySelector('.grid');
-            const tpl = document.getElementById('placeholder-card');
-            if (!grid || !tpl) return;
-            for (let i=0;i<12;i++) {
-                const node = tpl.content.cloneNode(true);
-                grid.appendChild(node);
+        // 班级相册轮播逻辑：支持 2000ms 自动播放、object-contain 完整显示图片
+        // 使用首尾克隆实现无缝循环；同时将图片框放大以使图片更显眼
+        document.addEventListener('DOMContentLoaded', function(){
+            const images = [
+                'picture/2b73094e1d19699b648ddddb7d45a264.jpg',
+                'picture/54f6f194d3168f3bc92e01cf6c820b34.jpg',
+                'picture/72c349b7583dbb3f188365426b7bbc79.jpg',
+                'picture/b9b8a391df60ebef2cc21cff670bdf8c.jpg',
+                'picture/bdbc3d743c46788469682eda93bd7c5a.jpg',
+                'picture/cfe8f93b610e0130d4e987d966a51e29.jpg',
+                'picture/d0973c46bb5ea1f001a9c9ab4fa925e9.jpg',
+                'picture/fc2a04aed398eb1520df4ea890372d1f.jpg'
+            ];
+
+            const viewport = document.getElementById('class-slideshow');
+            const indicators = document.getElementById('sl-indicators');
+            if (!viewport) return;
+
+            // 创建 track 容器（用于无缝循环：前后会插入克隆）
+            const track = document.createElement('div');
+            track.style.display = 'flex';
+            track.style.gap = '8px';
+            track.style.alignItems = 'center';
+            track.style.height = '100%';
+            track.style.transition = 'transform 600ms ease';
+            track.style.transition = 'transform 500ms ease';
+            track.style.willChange = 'transform';
+            viewport.appendChild(track);
+
+            const dots = [];
+            const slides = [];
+            const realCount = images.length;
+
+            images.forEach((src, i) => {
+                const slide = document.createElement('div');
+                slide.className = 'slide';
+                slide.style.flex = '0 0 auto';
+                slide.style.height = '100%';
+                slide.style.display = 'flex';
+                slide.style.alignItems = 'center';
+                slide.style.justifyContent = 'center';
+
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = `班级照片 ${i+1}`;
+                // 优化：延迟加载与异步解码，减轻首次渲染压力
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '100%';
+                img.style.objectFit = 'contain';
+                img.style.borderRadius = '8px';
+                slide.appendChild(img);
+
+                track.appendChild(slide);
+                slides.push(slide);
+
+                const dot = document.createElement('button');
+                dot.className = 'w-3 h-3 rounded-full bg-white/60 hover:bg-white';
+                // dots map to real slides; click should go to index i (0-based)
+                dot.addEventListener('click', () => { goToReal(i); resetTimer(); });
+                indicators.appendChild(dot);
+                dots.push(dot);
+            });
+
+            // 为实现无缝循环，克隆末尾与开头的 slide
+            const firstClone = slides[0].cloneNode(true);
+            const lastClone = slides[slides.length - 1].cloneNode(true);
+            track.insertBefore(lastClone, track.firstChild);
+            track.appendChild(firstClone);
+
+            let current = 1; // 由于前面插入了一个 clone，真实第一张在索引 1
+            let timer = null;
+            const autoplayInterval = 2000; // 2000ms
+            const gap = 8; // px, matches track gap
+
+            // 计算并设置每个 slide 的宽度（使用视口宽度的比例以便左右邻居可见）
+            function layoutSlides(){
+                const vw = viewport.clientWidth;
+                // slideWidth 取视口的 90%（使图片显得更大）
+                const slideWidth = Math.round(vw * 0.9);
+                // 所有 slide（包括克隆）都设置相同宽度
+                const allSlides = track.querySelectorAll('.slide');
+                allSlides.forEach(s => { s.style.width = slideWidth + 'px'; });
+                // 将 track translate 以当前 slide 居中
+                updatePosition(false);
             }
-        })();
+
+            function updateIndicators(){
+                // 当前真实索引
+                const realIdx = ((current - 1) % realCount + realCount) % realCount;
+                dots.forEach((d, idx) => {
+                    if (idx === realIdx) { d.classList.add('scale-110','bg-white'); } else { d.classList.remove('scale-110','bg-white'); }
+                });
+            }
+
+            function updatePosition(animate = true){
+                const allSlides = track.querySelectorAll('.slide');
+                if (!allSlides.length) return;
+                const vw = viewport.clientWidth;
+                const slideWidth = allSlides[0].clientWidth;
+                const totalStep = slideWidth + gap;
+                const offset = Math.round((vw - slideWidth) / 2 - current * totalStep);
+                if (!animate) {
+                    // 临时关闭过渡以做无缝跳转
+                    track.style.transition = 'none';
+                    track.style.transform = `translateX(${offset}px)`;
+                    // 强制回流
+                    void track.offsetHeight;
+                    // 恢复过渡
+                    track.style.transition = 'transform 500ms ease';
+                } else {
+                    track.style.transform = `translateX(${offset}px)`;
+                }
+                updateIndicators();
+            }
+
+            // 在带克隆的 track 中移动
+            function next(){ current = current + 1; updatePosition(true); }
+            function prev(){ current = current - 1; updatePosition(true); }
+            // goToReal：接受 0-based real index, 转为带前置 clone 的索引
+            function goToReal(realIdx){ current = realIdx + 1; updatePosition(true); }
+
+            function startTimer(){ timer = setInterval(next, autoplayInterval); }
+            function resetTimer(){ if (timer) clearInterval(timer); startTimer(); }
+
+            const nextBtn = document.getElementById('sl-next');
+            const prevBtn = document.getElementById('sl-prev');
+            if (nextBtn) nextBtn.addEventListener('click', ()=>{ next(); resetTimer(); });
+            if (prevBtn) prevBtn.addEventListener('click', ()=>{ prev(); resetTimer(); });
+
+            // 鼠标悬停暂停
+            viewport.addEventListener('mouseenter', ()=> { if (timer) clearInterval(timer); });
+            viewport.addEventListener('mouseleave', ()=> { resetTimer(); });
+
+            // 监听 transitionend 以在到达克隆时无缝跳转到真实 slide
+            track.addEventListener('transitionend', () => {
+                // 当移动到最前面的克隆（index 0）时，跳转到真实最后一张（index = realCount）
+                if (current === 0) {
+                    current = realCount;
+                    updatePosition(false);
+                }
+                // 当移动到最后面的克隆（index = realCount + 1）时，跳转到真实第一张（index = 1）
+                if (current === realCount + 1) {
+                    current = 1;
+                    updatePosition(false);
+                }
+            });
+
+            // 响应式：窗口尺寸变化时重新布局
+            window.addEventListener('resize', () => { layoutSlides(); });
+
+            // 首次布局并启动：把初始位置设为第一张(索引1)
+            layoutSlides();
+            updatePosition(false);
+            startTimer();
+        });
     </script>
 
     <!-- 班级成员分页功能 -->
